@@ -132,9 +132,9 @@ class Producto2 {
         this.setStock(stock);
     }
     setPrecio(precio) {
-        const valor = Numer(precio);
-        if (precio > 0 && !isNaN(precio))
-            this.#precio = precio;
+        const valor = Number(precio);
+        if (valor > 0 && !isNaN(precio))
+            this.#precio = valor;
         else
             console.log("El precio tiene que ser mayor a 0");
         return;
@@ -301,7 +301,9 @@ class Cuenta {
             this.#saldo = 0;
         }
     }
-
+    #setSaldo(nuevoSaldo) {
+        this.#saldo = nuevoSaldo;
+    }
     getSaldo() {
         return this.#saldo;
     }
@@ -345,6 +347,9 @@ class Cuenta {
         cuentaDestino.depositar(monto);
         console.log("Transferencia realizada con éxito");
     }
+    _modificarSaldo(nuevoSaldo) {
+        this.#setSaldo(nuevoSaldo);
+    }
 }
 
 class CuentaAhorro extends Cuenta {
@@ -372,10 +377,12 @@ class CuentaCorriente extends Cuenta {
             console.log("El monto a retirar debe ser un número válido");
             return;
         }
-        if (monto <= this.getSaldo() + this.limiteSobregiro) {
-            const nuevoSaldo = this.getSaldo() - monto;
 
-            super.depositar(nuevoSaldo - this.getSaldo());
+        const saldoDisponible = this.getSaldo() + this.limiteSobregiro;
+
+        if (monto <= saldoDisponible) {
+            const nuevoSaldo = this.getSaldo() - monto;
+            this._modificarSaldo(nuevoSaldo);
             console.log("Retiro con sobregiro autorizado. Nuevo saldo: $" + this.getSaldo().toFixed(2));
         } else {
             console.log("Límite de sobregiro excedido");
@@ -432,19 +439,19 @@ class Notificacion {
 
 class Email extends Notificacion {
     enviar() {
-        console.log("📧 Enviando correo a " + this.destinatario + ": " + this.mensaje);
+        console.log("Enviando correo a " + this.destinatario + ": " + this.mensaje);
     }
 }
 
 class SMS extends Notificacion {
     enviar() {
-        console.log("📱 Enviando SMS a " + this.destinatario + ": " + this.mensaje);
+        console.log("Enviando SMS a " + this.destinatario + ": " + this.mensaje);
     }
 }
 
 class Push extends Notificacion {
     enviar() {
-        console.log("🔔 Enviando notificación push a " + this.destinatario + ": " + this.mensaje);
+        console.log("Enviando notificación push a " + this.destinatario + ": " + this.mensaje);
     }
 }
 
